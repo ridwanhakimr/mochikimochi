@@ -4,24 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- cdn bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-  <!-- bootstrap icon -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-  <!-- link css -->
   <link rel="stylesheet" href="style.css">
-  <!-- favicon -->
   <link rel="shortcut icon"
     href="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true"
     type="image/x-icon">
-  <!-- title -->
   <title>Mochi Kimochi</title>
 </head>
 
 <body>
-  <!-- Navbar -->
   <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light fixed-top navbar-transparent">
     <div class="container">
       <a class="navbar-brand fw-bold" href="#"><img
@@ -45,7 +39,6 @@
     </div>
   </nav>
 
-  <!-- Isi -->
   <div class="home bg-light d-flex flex-column justify-content-center align-items-center">
     <h1 class="text-white display-1 mb-1 fw-bold">MOCHI KIMOCHI</h1>
     <p class="lead text-white">Rasakan sensasi mochi premium isi krim dan topping buah segar. Cocok untuk cemilan,
@@ -67,12 +60,16 @@
             </p>
             <div class="d-flex justify-content-between align-items-center">
               <p class="product-price fw-bold text-success mb-0">Rp{{ number_format($product->harga, 0, ',', '.') }}</p>
-              <span class="badge {{ $product->stock > 0 ? 'bg-success' : 'bg-danger' }}">
+              <span class="badge {{ $product->stok > 0 ? 'bg-success' : 'bg-danger' }}">
                 {{ $product->stok > 0 ? 'Tersedia' : 'Habis' }}
               </span>
             </div>
             @if ($product->stok > 0)
-            <button class="btn btn-buy mt-2" title="Beli Sekarang">
+            <button class="btn btn-buy mt-2"
+              data-id="{{ $product->id }}"
+              data-nama="{{ $product->nama }}"
+              data-harga="{{ $product->harga }}"
+              data-gambar="{{ asset('storage/' . $product->gambar) }}">
               <i class="bi bi-cart-check-fill"></i> Pesan Sekarang
             </button>
             @else
@@ -84,7 +81,6 @@
       @endforeach
     </div>
   </section>
-  <!-- Sidebar Checkout Toggleable -->
   <aside id="checkoutSidebar" class="checkout-sidebar closed">
     <div class="p-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -92,34 +88,17 @@
         <button id="closeSidebar" class="btn-close"></button>
       </div>
 
-      <!-- Daftar Produk -->
-      <ul class="list-group mb-3">
-        <li class="list-group-item d-flex align-items-center">
-          <img src="img/mochi1.png" alt="Matcha" width="50" height="50" class="rounded me-3" />
-
-          <div class="flex-grow-1">
-            <div class="fw-semibold">Matcha</div>
-            <div class="d-flex align-items-center gap-2 mt-1">
-              <button class="btn btn-sm btn-outline-secondary px-2 py-0 btn-minus">−</button>
-              <span class="qty">1</span>
-              <button class="btn btn-sm btn-outline-secondary px-2 py-0 btn-plus">+</button>
-            </div>
-          </div>
-
-          <span class="fw-bold text-success ms-3">Rp12.000</span>
-        </li>
-      </ul>
+      <ul class="list-group mb-3" id="cart-items">
+        </ul>
 
       <hr />
 
-      <!-- Total -->
       <div class="d-flex justify-content-between fw-bold mb-3">
         <span>Total</span>
-        <span class="text-success">Rp36.000</span>
+        <span class="text-success" id="cart-total">Rp0</span>
       </div>
 
-      <!-- Tombol Checkout -->
-      <button class="btn btn-success w-100">
+      <button class="btn btn-success w-100" id="whatsapp-checkout">
         <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
       </button>
     </div>
@@ -130,7 +109,6 @@
       <h2 class="text-center fw-bold mb-5" style="color: #0d6efd;">KONTAK</h2>
       <div class="row g-4 align-items-center">
 
-        <!-- Kontak Info -->
         <div class="col-md-6">
           <div class="d-flex align-items-start mb-4">
             <div class="me-3 fs-3 text-success"><i class="bi bi-whatsapp"></i></div>
@@ -157,11 +135,10 @@
           </div>
         </div>
 
-        <!-- Google Maps -->
         <div class="col-md-6">
           <div class="ratio ratio-4x3 rounded shadow-sm">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.210961889483!2d107.58543447483491!3d-6.865304193133292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e7552fae36dd%3A0xc8f2287e19808d16!2sMochi%20Kimochi%20(Mochi%20Daifuku)!5e0!3m2!1sid!2sid!4v1748599483203!5m2!1sid!2sid"
+              src="https://maps.google.com/maps?q=Jalan%20Pak%20Gatot%20Raya%20No.73S%2C%20Gegerkalong%2C%20Kecamatan%20Sukasari%2C%20Kota%20Bandung%2C%20Jawa%20Barat%2040153&t=&z=13&ie=UTF8&iwloc=&output=embed"
               allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
@@ -174,7 +151,6 @@
     <div class="container">
       <div class="row g-4 justify-content-between">
 
-        <!-- Logo & Deskripsi -->
         <div class="col-md-6">
           <div class="d-flex align-items-start">
             <img src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true" alt="Logo Mochi Kimochi" width="50" class="me-3" />
@@ -187,7 +163,6 @@
           </div>
         </div>
 
-        <!-- Sosial Media -->
         <div class="col-md-4 align-items-start">
           <h5 class="fw-bold">Ikuti Kami</h5>
           <ul class="list-unstyled">
@@ -203,13 +178,109 @@
 
       <hr class="border-secondary mt-4" />
       <div class="text-center small">
-        &copy; 2025 Mochi Kimochi. Hak Cipta Dilindungi.
+        © 2025 Mochi Kimochi. Hak Cipta Dilindungi.
       </div>
     </div>
   </footer>
 
-  <!-- Script -->
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cart = {};
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartTotalElement = document.getElementById('cart-total');
+      const whatsappCheckoutButton = document.getElementById('whatsapp-checkout');
+
+      function updateCartView() {
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+
+        for (const id in cart) {
+          const item = cart[id];
+          total += item.harga * item.qty;
+
+          const cartItemHTML = `
+            <li class="list-group-item d-flex align-items-center">
+              <img src="${item.gambar}" alt="${item.nama}" width="50" height="50" class="rounded me-3" />
+              <div class="flex-grow-1">
+                <div class="fw-semibold">${item.nama}</div>
+                <div class="d-flex align-items-center gap-2 mt-1">
+                  <button class="btn btn-sm btn-outline-secondary px-2 py-0 btn-minus" data-id="${id}">−</button>
+                  <span class="qty">${item.qty}</span>
+                  <button class="btn btn-sm btn-outline-secondary px-2 py-0 btn-plus" data-id="${id}">+</button>
+                </div>
+              </div>
+              <span class="fw-bold text-success ms-3">Rp${(item.harga * item.qty).toLocaleString('id-ID')}</span>
+            </li>
+          `;
+          cartItemsContainer.innerHTML += cartItemHTML;
+        }
+
+        cartTotalElement.textContent = `Rp${total.toLocaleString('id-ID')}`;
+      }
+
+      document.querySelectorAll('.btn-buy').forEach(button => {
+        button.addEventListener('click', function() {
+          const id = this.dataset.id;
+          if (cart[id]) {
+            cart[id].qty++;
+          } else {
+            cart[id] = {
+              nama: this.dataset.nama,
+              harga: parseInt(this.dataset.harga),
+              gambar: this.dataset.gambar,
+              qty: 1
+            };
+          }
+          updateCartView();
+        });
+      });
+
+      cartItemsContainer.addEventListener('click', function(e) {
+        const id = e.target.dataset.id;
+        if (e.target.classList.contains('btn-plus')) {
+          cart[id].qty++;
+        } else if (e.target.classList.contains('btn-minus')) {
+          cart[id].qty--;
+          if (cart[id].qty === 0) {
+            delete cart[id];
+          }
+        }
+        updateCartView();
+      });
+
+      whatsappCheckoutButton.addEventListener('click', function() {
+        let message = "Halo, saya ingin memesan:\n\n";
+        let total = 0;
+
+        for (const id in cart) {
+          const item = cart[id];
+          const subtotal = item.harga * item.qty;
+          message += `${item.nama} ${item.qty} = Rp${subtotal.toLocaleString('id-ID')}\n`;
+          total += subtotal;
+        }
+
+        message += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
+
+        const whatsappURL = `https://wa.me/62895351788818?text=${encodeURIComponent(message)}`;
+        window.open(whatsappURL, '_blank');
+      });
+
+      const toggleBtn = document.getElementById("checkoutToggle");
+      const sidebar = document.getElementById("checkoutSidebar");
+      const closeBtn = document.getElementById("closeSidebar");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.remove("closed");
+        sidebar.classList.add("open");
+      });
+
+      closeBtn.addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        sidebar.classList.add("closed");
+      });
+
+    });
+
     const navbar = document.getElementById("mainNavbar");
 
     window.addEventListener("scroll", function() {
@@ -246,45 +317,6 @@
     });
   </script>
 
-  <script>
-    const toggleBtn = document.getElementById("checkoutToggle");
-    const sidebar = document.getElementById("checkoutSidebar");
-    const closeBtn = document.getElementById("closeSidebar");
-
-    toggleBtn.addEventListener("click", () => {
-      sidebar.classList.remove("closed");
-      sidebar.classList.add("open");
-    });
-
-    closeBtn.addEventListener("click", () => {
-      sidebar.classList.remove("open");
-      sidebar.classList.add("closed");
-    });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.btn-plus').forEach(button => {
-        button.addEventListener('click', function() {
-          const qtyElement = this.previousElementSibling;
-          let qty = parseInt(qtyElement.textContent);
-          qtyElement.textContent = qty + 1;
-        });
-      });
-
-      document.querySelectorAll('.btn-minus').forEach(button => {
-        button.addEventListener('click', function() {
-          const qtyElement = this.nextElementSibling;
-          let qty = parseInt(qtyElement.textContent);
-          if (qty > 1) {
-            qtyElement.textContent = qty - 1;
-          }
-        });
-      });
-    });
-  </script>
-
-
-  <!-- js bootstrap 5 -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
