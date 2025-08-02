@@ -5,11 +5,7 @@ use App\Http\Controllers\indexcontroller;
 use App\Http\Controllers\mocicontroller;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/index', [indexcontroller::class, 'index']);
+Route::get('/', [indexcontroller::class, 'index']);
 
 
 Route::get('/admin', function () {
