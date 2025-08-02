@@ -47,7 +47,7 @@
 <script>
   $(document).ready(function() {
     $('#datatable').DataTable({
-      ajax: '/moci/data',
+      ajax: '/admin/moci/data',
       columns: [{
           data: 'nama'
         },
@@ -85,7 +85,7 @@
       let formData = new FormData(this);
       $.ajax({
         type: 'POST',
-        url: '/moci/store',
+        url: '/admin/moci/store',
         data: formData,
         contentType: false,
         processData: false,
@@ -99,7 +99,7 @@
     $(document).on('click', '.btn-edit', function() {
       let id = $(this).data('id');
 
-      $.get(`/moci/${id}`, function(res) {
+      $.get(`/admin/moci/${id}`, function(res) {
         $('#edit-id').val(res.id);
         $('#edit-nama').val(res.nama);
         $('#edit-harga').val(res.harga);
@@ -117,7 +117,7 @@
       formData.append('_method', 'POST'); // spoof method PUT
 
       $.ajax({
-        url: `/moci/${id}`,
+        url: `/admin/moci/${id}`,
         type: 'POST',
         data: formData,
         contentType: false,
@@ -139,7 +139,7 @@
       let id = $(this).data('id');
       if (confirm('Yakin hapus?')) {
         $.ajax({
-          url: `/moci/${id}`,
+          url: `/admin/moci/${id}`,
           type: 'DELETE',
           data: {
             _token: '{{ csrf_token() }}'

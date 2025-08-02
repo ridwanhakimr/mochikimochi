@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class AuthController extends Controller
 {
@@ -14,26 +15,42 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        // 1. Validasi input
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
+        // 2. Ambil kredensial dari request (gunakan username)
+        $credentials = $request->only('username', 'password');
+
+        // 3. Coba lakukan login
         if (Auth::attempt($credentials)) {
+            $request->session()->regenerate(); // Regenerasi session untuk keamanan
             $user = Auth::user();
 
-            // Cek apakah dia admin
+            // 4. Cek apakah user adalah admin
             if ($user->is_admin) {
-                return redirect('/dashboard');
+                return redirect()->intended(route('admin.dashboard'));
             } else {
+                // Jika bukan admin, logout dan beri pesan error
                 Auth::logout();
-                return back()->with('error', 'Anda tidak memiliki akses.');
+                return back()->with('error', 'Anda tidak memiliki hak akses admin.');
             }
         }
 
-        return back()->with('error', 'Email atau password salah.');
+        // 5. Jika login gagal
+        return back()->with('error', 'Username atau password salah.');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
-        return redirect('/login')->with('success', 'Berhasil logout.');
+        Auth::logout(); // Proses logout
+
+        $request->session()->invalidate(); // Matikan sesi yang ada
+
+        $request->session()->regenerateToken(); // Buat token baru
+
+        return redirect('/login'); // Arahkan ke halaman login
     }
 }
