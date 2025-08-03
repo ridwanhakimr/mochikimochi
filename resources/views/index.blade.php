@@ -30,8 +30,11 @@
           <li class="nav-item p-2 text-center"><a class="nav-link rounded py-2 px-3" href="#produk">PRODUK</a></li>
           <li class="nav-item p-2 text-center"><a class="nav-link rounded py-2 px-3" href="#kontak">KONTAK</a></li>
           <li class="nav-item p-2 text-center">
-            <a id="checkoutToggle" class="nav-link rounded py-2 px-3" href="javascript:void(0)">
+            <a id="checkoutToggle" class="nav-link rounded py-2 px-3 position-relative" href="javascript:void(0)">
               <i class="bi bi-cart-check"></i> Check Out
+              <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                0
+              </span>
             </a>
           </li>
         </ul>
@@ -189,14 +192,17 @@
       const cartItemsContainer = document.getElementById('cart-items');
       const cartTotalElement = document.getElementById('cart-total');
       const whatsappCheckoutButton = document.getElementById('whatsapp-checkout');
+      const cartBadge = document.getElementById('cart-badge');
 
       function updateCartView() {
         cartItemsContainer.innerHTML = '';
         let total = 0;
+        let totalQty = 0;
 
         for (const id in cart) {
           const item = cart[id];
           total += item.harga * item.qty;
+          totalQty += item.qty;
 
           const cartItemHTML = `
             <li class="list-group-item d-flex align-items-center">
@@ -216,6 +222,20 @@
         }
 
         cartTotalElement.textContent = `Rp${total.toLocaleString('id-ID')}`;
+
+        if (totalQty > 0) {
+          cartBadge.textContent = totalQty;
+          cartBadge.style.display = 'block';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+
+      function resetCart() {
+        for (const key in cart) {
+          delete cart[key];
+        }
+        updateCartView();
       }
 
       document.querySelectorAll('.btn-buy').forEach(button => {
@@ -249,6 +269,11 @@
       });
 
       whatsappCheckoutButton.addEventListener('click', function() {
+        if (Object.keys(cart).length === 0) {
+          alert("Keranjang Anda masih kosong!");
+          return;
+        }
+        
         let message = "Halo, saya ingin memesan:\n\n";
         let total = 0;
 
@@ -261,8 +286,11 @@
 
         message += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
 
-        const whatsappURL = `https://wa.me/62895351788818?text=${encodeURIComponent(message)}`;
+        const whatsappURL = `https://wa.me/6285703482585?text=${encodeURIComponent(message)}`;
         window.open(whatsappURL, '_blank');
+
+        // Reset keranjang setelah membuka WhatsApp
+        resetCart();
       });
 
       const toggleBtn = document.getElementById("checkoutToggle");
@@ -278,6 +306,8 @@
         sidebar.classList.remove("open");
         sidebar.classList.add("closed");
       });
+      
+      updateCartView();
 
     });
 
