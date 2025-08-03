@@ -12,7 +12,7 @@
       <i class="bi bi-database-fill-gear me-2"></i>Data Master
     </a>
     <ul class="dropdown-menu dropdown-menu-dark">
-      <li><a class="dropdown-item" href="{{ route('moci.index') }}">Moci</a></li>
+      <li><a class="dropdown-item" href="{{ route('moci.index') }}">Produk</a></li>
     </ul>
   </div>
 </div>

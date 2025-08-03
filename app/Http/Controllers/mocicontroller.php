@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\mocimodel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class mocicontroller extends Controller
 {
@@ -13,9 +14,20 @@ class mocicontroller extends Controller
         return view("table.moci");
     }
 
+    public function dashboard()
+    {
+        $totalProduk = mocimodel::count(); // Menghitung total baris di tabel moci
+
+        return view('admin.content', [
+            'totalProduk' => $totalProduk,
+            // 'totalStok' => $totalStok,
+        ]);
+    }
+
     public function data()
     {
-        return response()->json(['data' => mocimodel::all()]);
+        $moci = mocimodel::with('updatedBy')->get();
+        return response()->json(['data' => $moci]);
     }
 
     public function store(Request $request)
@@ -39,6 +51,7 @@ class mocicontroller extends Controller
             'harga' => $request->harga,
             'deskripsi' => $request->deskripsi,
             'stok' => $request->stok,
+            'updated_by' => Auth::id(),
         ]);
 
         return response()->json($moci);
@@ -68,7 +81,7 @@ class mocicontroller extends Controller
             }
             $data['gambar'] = $request->file('gambar')->store('moci', 'public');
         }
-
+        $data['updated_by'] = Auth::id();
         $moci->update($data);
 
         return response()->json($moci);

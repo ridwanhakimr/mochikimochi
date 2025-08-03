@@ -12,11 +12,6 @@
       </div>
     </div>
 
-    <!-- Search bar (initially hidden) -->
-    <div class="p-3 d-none hiddensearch">
-      <input type="text" class="form-control global-search" placeholder="Cari sesuatu..." />
-    </div>
-
     <div class="table-responsive">
       <table id="datatable" class="table table-striped mb-0">
         <thead>
@@ -26,7 +21,7 @@
             <th>Harga</th>
             <th>Stok</th>
             <th>Deskripsi</th>
-            <th>Aksi</th>
+            <th>Terakhir diupdate oleh</th> <th>Aksi</th>
           </tr>
         </thead>
       </table>
@@ -68,6 +63,10 @@
         },
         {
           data: 'deskripsi'
+        },
+        { // Tambahkan kolom baru
+          data: 'updated_by.name',
+          defaultContent: 'N/A' // Tampilkan jika tidak ada data admin
         },
         {
           data: null,

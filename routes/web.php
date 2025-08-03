@@ -31,6 +31,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     // Rute logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    Route::get('/admin', [mocicontroller::class, 'dashboard'])->middleware('auth')->name('admin.dashboard');
+
     // Rute untuk CRUD Moci
     Route::prefix('moci')->name('moci.')->group(function () {
         Route::get('/', [mocicontroller::class, 'index'])->name('index');

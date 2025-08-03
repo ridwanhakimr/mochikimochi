@@ -1,18 +1,23 @@
 @extends('admin.app')
 
 @section('content')
-<h3 class="mb-4">Dashboard</h3>
-
-<div class="row g-4">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary shadow-sm h-100">
-            <div class="card-body d-flex align-items-center">
-                <div class="me-3">
-                    <i class="bi bi-box-seam fs-1"></i>
-                </div>
-                <div>
-                    <h5 class="card-title mb-1">Produk</h5>
-                    <p class="card-text mb-0">12 Produk Terdaftar</p>
+<div class="container-fluid px-4">
+    <div class="row">
+        {{-- Kartu Statistik Total Produk --}}
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            {{-- Tampilkan angka total produk di sini --}}
+                            <div class="fs-2 fw-bold">{{ $totalProduk }}</div>
+                            <div>Total Produk Terdaftar</div>
+                        </div>
+                        <div class="fs-1">
+                            {{-- Ikon dari Bootstrap Icons --}}
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

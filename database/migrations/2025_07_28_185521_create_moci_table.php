@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('harga', 10, 2);
             $table->text('deskripsi');
             $table->integer('stok')->default(0); 
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }
