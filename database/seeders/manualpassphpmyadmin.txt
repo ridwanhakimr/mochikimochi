@@ -1,0 +1,4 @@
+php artisan tinker
+> use Illuminate\Support\Facades\Hash;
+> Hash::make('passwordku')
+= "$2y$12$IchemwoikEsi9tdrHtg3auGYl1331yp.UT6s3XPN1kdcg.JrA9MLu"

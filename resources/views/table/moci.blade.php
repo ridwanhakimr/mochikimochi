@@ -113,11 +113,16 @@
       e.preventDefault();
       let id = $('#edit-id').val();
       let formData = new FormData(this);
-      formData.append('_method', 'POST'); // spoof method PUT
+      
+      // --- TAMBAHKAN BARIS INI ---
+      formData.append('_method', 'PUT');
+      // -----------------------------
 
       $.ajax({
-        url: `/admin/moci/${id}`,
+        // Pastikan tipe request adalah 'POST'
+        // Laravel akan secara otomatis mendeteksinya sebagai 'PUT' karena baris di atas
         type: 'POST',
+        url: `/admin/moci/${id}`,
         data: formData,
         contentType: false,
         processData: false,
@@ -127,8 +132,20 @@
           alert('Produk berhasil diupdate!');
         },
         error: function(xhr) {
-          alert('Gagal update produk!');
-          console.log(xhr.responseText);
+          // Tampilkan pesan error yang lebih detail di console
+          console.error('Terjadi kesalahan:', xhr.responseText);
+          
+          // Coba parsing JSON untuk error validasi
+          try {
+            let errors = JSON.parse(xhr.responseText).errors;
+            let errorMsg = "Gagal update produk:\n";
+            $.each(errors, function(key, value) {
+              errorMsg += "- " + value[0] + "\n";
+            });
+            alert(errorMsg);
+          } catch (e) {
+            alert('Gagal update produk! Silakan cek console browser untuk detailnya.');
+          }
         }
       });
     });

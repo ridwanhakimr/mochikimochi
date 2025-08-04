@@ -86,28 +86,49 @@
       @endforeach
     </div>
   </section>
-  <aside id="checkoutSidebar" class="checkout-sidebar closed">
+
+  <aside id="checkoutSidebar" class="checkout-sidebar closed d-none d-lg-block">
     <div class="p-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0"><i class="bi bi-cart-check"></i> Check Out</h5>
         <button id="closeSidebar" class="btn-close"></button>
       </div>
-
-      <ul class="list-group mb-3" id="cart-items">
-        </ul>
-
+      <ul class="list-group mb-3" id="cart-items-desktop"></ul>
       <hr />
-
       <div class="d-flex justify-content-between fw-bold mb-3">
         <span>Total</span>
-        <span class="text-success" id="cart-total">Rp0</span>
+        <span class="text-success" id="cart-total-desktop">Rp0</span>
       </div>
-
-      <button class="btn btn-success w-100" id="whatsapp-checkout">
+      <button class="btn btn-success w-100" id="whatsapp-checkout-desktop">
         <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
       </button>
     </div>
   </aside>
+
+  <div class="modal fade" id="checkoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold"><i class="bi bi-cart-check"></i> Check Out</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group mb-3" id="cart-items-mobile"></ul>
+        </div>
+        <div class="modal-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-between fw-bold mb-3">
+              <span>Total</span>
+              <span class="text-success" id="cart-total-mobile">Rp0</span>
+            </div>
+            <button class="btn btn-success w-100" id="whatsapp-checkout-mobile">
+              <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <section id="kontak" class="py-5 bg-light" style="height: 100vh;">
     <div class="container">
@@ -191,13 +212,19 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const cart = {};
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartTotalElement = document.getElementById('cart-total');
-      const whatsappCheckoutButton = document.getElementById('whatsapp-checkout');
+      const cartItemsDesktop = document.getElementById('cart-items-desktop');
+      const cartTotalDesktop = document.getElementById('cart-total-desktop');
+      const whatsappCheckoutDesktop = document.getElementById('whatsapp-checkout-desktop');
+
+      const cartItemsMobile = document.getElementById('cart-items-mobile');
+      const cartTotalMobile = document.getElementById('cart-total-mobile');
+      const whatsappCheckoutMobile = document.getElementById('whatsapp-checkout-mobile');
+
       const cartBadge = document.getElementById('cart-badge');
 
       function updateCartView() {
-        cartItemsContainer.innerHTML = '';
+        cartItemsDesktop.innerHTML = '';
+        cartItemsMobile.innerHTML = '';
         let total = 0;
         let totalQty = 0;
 
@@ -220,10 +247,12 @@
               <span class="fw-bold text-success ms-3">Rp${(item.harga * item.qty).toLocaleString('id-ID')}</span>
             </li>
           `;
-          cartItemsContainer.innerHTML += cartItemHTML;
+          cartItemsDesktop.innerHTML += cartItemHTML;
+          cartItemsMobile.innerHTML += cartItemHTML;
         }
 
-        cartTotalElement.textContent = `Rp${total.toLocaleString('id-ID')}`;
+        cartTotalDesktop.textContent = `Rp${total.toLocaleString('id-ID')}`;
+        cartTotalMobile.textContent = `Rp${total.toLocaleString('id-ID')}`;
 
         if (totalQty > 0) {
           cartBadge.textContent = totalQty;
@@ -265,7 +294,8 @@
           });
       });
 
-      cartItemsContainer.addEventListener('click', function(e) {
+      function handleCartActions(container) {
+        container.addEventListener('click', function(e) {
           const id = e.target.dataset.id;
           if (e.target.classList.contains('btn-plus')) {
               if (cart[id].qty < cart[id].stok) {
@@ -280,67 +310,75 @@
               }
           }
           updateCartView();
-      });
+        });
+      }
 
-      whatsappCheckoutButton.addEventListener('click', function() {
-    if (Object.keys(cart).length === 0) {
-        alert("Keranjang Anda masih kosong!");
-        return;
-    }
+      handleCartActions(cartItemsDesktop);
+      handleCartActions(cartItemsMobile);
 
-    // Kirim data ke server untuk mengurangi stok
-    fetch("{{ route('checkout.process') }}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}', // Pastikan CSRF token ada di meta tag
-        },
-        body: JSON.stringify({ cart: cart })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Gagal mengurangi stok produk.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data.message); // Tampilkan pesan sukses
-
-        // Lanjutkan ke WhatsApp
-        let message = "Halo, saya ingin memesan:\n\n";
-        let total = 0;
-
-        for (const id in cart) {
-            const item = cart[id];
-            const subtotal = item.harga * item.qty;
-            message += `${item.nama} ${item.qty} = Rp${subtotal.toLocaleString('id-ID')}\n`;
-            total += subtotal;
+      function handleCheckout() {
+        if (Object.keys(cart).length === 0) {
+            alert("Keranjang Anda masih kosong!");
+            return;
         }
 
-        message += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
+        // Kirim data ke server untuk mengurangi stok
+        fetch("{{ route('checkout.process') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: JSON.stringify({ cart: cart })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Gagal mengurangi stok produk.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.message);
 
-        const whatsappURL = `https://wa.me/6289604482359?text=${encodeURIComponent(message)}`;
-        window.open(whatsappURL, '_blank');
+            let message = "Halo, saya ingin memesan:\n\n";
+            let total = 0;
 
-        // Reset keranjang setelah berhasil
-        resetCart();
-        
-        // Refresh halaman untuk mendapatkan data stok terbaru
-        location.reload(); 
-    })
-    .catch(error => {
-        alert(error.message);
-        console.error('Error:', error);
-    });
-});
+            for (const id in cart) {
+                const item = cart[id];
+                const subtotal = item.harga * item.qty;
+                message += `${item.nama} ${item.qty} = Rp${subtotal.toLocaleString('id-ID')}\n`;
+                total += subtotal;
+            }
+
+            message += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
+
+            const whatsappURL = `https://wa.me/6289604482359?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+
+            resetCart();
+            location.reload(); 
+        })
+        .catch(error => {
+            alert(error.message);
+            console.error('Error:', error);
+        });
+      }
+
+      whatsappCheckoutDesktop.addEventListener('click', handleCheckout);
+      whatsappCheckoutMobile.addEventListener('click', handleCheckout);
 
       const toggleBtn = document.getElementById("checkoutToggle");
       const sidebar = document.getElementById("checkoutSidebar");
       const closeBtn = document.getElementById("closeSidebar");
+      const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
 
       toggleBtn.addEventListener("click", () => {
-        sidebar.classList.remove("closed");
-        sidebar.classList.add("open");
+        if (window.innerWidth < 992) {
+          checkoutModal.show();
+        } else {
+          sidebar.classList.remove("closed");
+          sidebar.classList.add("open");
+        }
       });
 
       closeBtn.addEventListener("click", () => {
@@ -349,7 +387,6 @@
       });
       
       updateCartView();
-
     });
 
     const navbar = document.getElementById("mainNavbar");
@@ -371,7 +408,7 @@
       let current = "";
 
       sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100; // sesuaikan offset
+        const sectionTop = section.offsetTop - 100;
         const sectionHeight = section.offsetHeight;
 
         if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {

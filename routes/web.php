@@ -44,7 +44,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         Route::get('/data', [mocicontroller::class, 'data'])->name('data');
         Route::post('/store', [mocicontroller::class, 'store'])->name('store');
         Route::get('/{id}', [mocicontroller::class, 'show'])->name('show');
-        Route::post('/{id}', [mocicontroller::class, 'update'])->name('update');
+        Route::put('/{id}', [mocicontroller::class, 'update'])->name('admin.moci.update');
         Route::delete('/{id}', [mocicontroller::class, 'destroy'])->name('destroy');
         
     });

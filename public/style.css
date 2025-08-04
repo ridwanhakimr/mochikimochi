@@ -191,8 +191,16 @@
   transform: translateX(100%);
 }
 
+/* Responsive checkout for mobile */
 @media (max-width: 991.98px) {
   .checkout-sidebar {
-    display: none;
+    display: none; /* Hide sidebar on small screens */
+  }
+
+  /* Show checkout as a modal on small screens */
+  #checkoutModal .modal-dialog {
+    margin: 0;
+    width: 100%;
+    max-width: none;
   }
 }
