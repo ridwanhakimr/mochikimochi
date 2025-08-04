@@ -6,6 +6,7 @@ use App\Models\mocimodel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class mocicontroller extends Controller
 {
@@ -98,5 +99,33 @@ class mocicontroller extends Controller
         $moci->delete();
 
         return response()->json(['message' => 'Produk dihapus']);
+    }
+    
+    public function processCheckout(Request $request)
+    {
+        $cart = $request->input('cart', []);
+
+        if (empty($cart)) {
+            return response()->json(['message' => 'Keranjang kosong.'], 400);
+        }
+
+        try {
+            DB::transaction(function () use ($cart) {
+                foreach ($cart as $id => $item) {
+                    $product = mocimodel::findOrFail($id);
+                    if ($product->stok >= $item['qty']) {
+                        $product->stok -= $item['qty'];
+                        $product->save();
+                    } else {
+                        // Jika stok tidak mencukupi, batalkan transaksi
+                        throw new \Exception('Stok untuk produk ' . $product->nama . ' tidak mencukupi.');
+                    }
+                }
+            });
+
+            return response()->json(['message' => 'Stok berhasil diperbarui.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal memproses checkout: ' . $e->getMessage()], 500);
+        }
     }
 }

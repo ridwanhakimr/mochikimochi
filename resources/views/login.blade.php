@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,16 +11,13 @@
   <link rel="stylesheet" href="login.css">
   <title>mocikimici - login</title>
 </head>
-
 <body>
-  <!-- Login 3 - Bootstrap Brain Component -->
   <section class="p-3 p-md-4 p-xl-5">
     <div class="container">
       <div class="row">
         <div class="col-12 col-md-6 bsb-tpl-bg-pink">
           <div class="d-flex flex-column justify-content-between h-100 p-3 p-md-4 p-xl-5">
-            <h3 class="m-0">Welcome!</h3>
-            <img class="img-fluid rounded mx-auto my-4" loading="lazy" src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true" width="245" height="80" alt="BootstrapBrain Logo">
+            <img class="img-fluid rounded mx-auto my-4" loading="lazy" src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true" width="245" height="80" alt="Logo">
           </div>
         </div>
         <div class="col-12 col-md-6 bsb-tpl-bg-lotion">
@@ -71,5 +67,4 @@
     </div>
   </section>
 </body>
-
 </html>

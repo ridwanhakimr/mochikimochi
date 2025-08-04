@@ -8,11 +8,16 @@ use Illuminate\Support\Facades\Route;
 // Rute untuk publik (halaman utama)
 Route::get('/', [indexcontroller::class, 'index']);
 
-// Rute untuk tamu (hanya bisa diakses jika belum login)
+// Rute untuk checkout
+Route::post('/checkout/process', [mocicontroller::class, 'processCheckout'])->name('checkout.process');
+
+
+// rute untuk login
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'formLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 });
+
 
 // --- RUTE ADMIN ---
 // Semua rute di dalam grup ini akan memiliki prefix /admin
@@ -43,4 +48,5 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         Route::delete('/{id}', [mocicontroller::class, 'destroy'])->name('destroy');
         
     });
+    
 });

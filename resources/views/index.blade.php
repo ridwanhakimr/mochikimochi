@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -50,7 +51,7 @@
   </div>
 
   <section class="container py-5" id="produk">
-    <h2 class="text-center mb-5 fw-bold" style="color:#FF90BB;">Rasa-Rasa Mochi Kami</h2>
+    <h2 class="text-center mb-5 fw-bold" style="color:#FF90BB;">Varian Rasa Mochi Kami</h2>
     <div class="row g-4">
       @foreach($products as $product)
       <div class="col-12 col-md-6 col-lg-4">
@@ -64,7 +65,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <p class="product-price fw-bold text-success mb-0">Rp{{ number_format($product->harga, 0, ',', '.') }}</p>
               <span class="badge {{ $product->stok > 0 ? 'bg-success' : 'bg-danger' }}">
-                {{ $product->stok > 0 ? 'Tersedia' : 'Habis' }}
+                  Stok: {{ $product->stok }}
               </span>
             </div>
             @if ($product->stok > 0)
@@ -72,7 +73,8 @@
               data-id="{{ $product->id }}"
               data-nama="{{ $product->nama }}"
               data-harga="{{ $product->harga }}"
-              data-gambar="{{ asset('storage/' . $product->gambar) }}">
+              data-gambar="{{ asset('storage/' . $product->gambar) }}"
+              data-stok="{{ $product->stok }}">
               <i class="bi bi-cart-check-fill"></i> Pesan Sekarang
             </button>
             @else
@@ -239,59 +241,98 @@
       }
 
       document.querySelectorAll('.btn-buy').forEach(button => {
-        button.addEventListener('click', function() {
-          const id = this.dataset.id;
-          if (cart[id]) {
-            cart[id].qty++;
-          } else {
-            cart[id] = {
-              nama: this.dataset.nama,
-              harga: parseInt(this.dataset.harga),
-              gambar: this.dataset.gambar,
-              qty: 1
-            };
-          }
-          updateCartView();
-        });
+          button.addEventListener('click', function() {
+              const id = this.dataset.id;
+              const stok = parseInt(this.dataset.stok);
+
+              if (cart[id] && cart[id].qty >= stok) {
+                  alert('Jumlah pesanan tidak boleh melebihi stok!');
+                  return;
+              }
+
+              if (cart[id]) {
+                  cart[id].qty++;
+              } else {
+                  cart[id] = {
+                      nama: this.dataset.nama,
+                      harga: parseInt(this.dataset.harga),
+                      gambar: this.dataset.gambar,
+                      stok: stok,
+                      qty: 1
+                  };
+              }
+              updateCartView();
+          });
       });
 
       cartItemsContainer.addEventListener('click', function(e) {
-        const id = e.target.dataset.id;
-        if (e.target.classList.contains('btn-plus')) {
-          cart[id].qty++;
-        } else if (e.target.classList.contains('btn-minus')) {
-          cart[id].qty--;
-          if (cart[id].qty === 0) {
-            delete cart[id];
+          const id = e.target.dataset.id;
+          if (e.target.classList.contains('btn-plus')) {
+              if (cart[id].qty < cart[id].stok) {
+                  cart[id].qty++;
+              } else {
+                  alert('Jumlah pesanan tidak boleh melebihi stok!');
+              }
+          } else if (e.target.classList.contains('btn-minus')) {
+              cart[id].qty--;
+              if (cart[id].qty === 0) {
+                  delete cart[id];
+              }
           }
-        }
-        updateCartView();
+          updateCartView();
       });
 
       whatsappCheckoutButton.addEventListener('click', function() {
-        if (Object.keys(cart).length === 0) {
-          alert("Keranjang Anda masih kosong!");
-          return;
+    if (Object.keys(cart).length === 0) {
+        alert("Keranjang Anda masih kosong!");
+        return;
+    }
+
+    // Kirim data ke server untuk mengurangi stok
+    fetch("{{ route('checkout.process') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}', // Pastikan CSRF token ada di meta tag
+        },
+        body: JSON.stringify({ cart: cart })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal mengurangi stok produk.');
         }
-        
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message); // Tampilkan pesan sukses
+
+        // Lanjutkan ke WhatsApp
         let message = "Halo, saya ingin memesan:\n\n";
         let total = 0;
 
         for (const id in cart) {
-          const item = cart[id];
-          const subtotal = item.harga * item.qty;
-          message += `${item.nama} ${item.qty} = Rp${subtotal.toLocaleString('id-ID')}\n`;
-          total += subtotal;
+            const item = cart[id];
+            const subtotal = item.harga * item.qty;
+            message += `${item.nama} ${item.qty} = Rp${subtotal.toLocaleString('id-ID')}\n`;
+            total += subtotal;
         }
 
         message += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
 
-        const whatsappURL = `https://wa.me/6285703482585?text=${encodeURIComponent(message)}`;
+        const whatsappURL = `https://wa.me/6289604482359?text=${encodeURIComponent(message)}`;
         window.open(whatsappURL, '_blank');
 
-        // Reset keranjang setelah membuka WhatsApp
+        // Reset keranjang setelah berhasil
         resetCart();
-      });
+        
+        // Refresh halaman untuk mendapatkan data stok terbaru
+        location.reload(); 
+    })
+    .catch(error => {
+        alert(error.message);
+        console.error('Error:', error);
+    });
+});
 
       const toggleBtn = document.getElementById("checkoutToggle");
       const sidebar = document.getElementById("checkoutSidebar");
