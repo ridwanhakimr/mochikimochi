@@ -192,8 +192,8 @@
                   </div>
                   <div>
                     <h5 class="fw-bold mb-1">WhatsApp</h5>
-                    <a href="https://wa.me/6281234567890" target="_blank" class="text-decoration-none text-muted">
-                      +62 812-3456-7890
+                    <a href="https://wa.me/6289630832740" target="_blank" class="text-decoration-none text-muted">
+                      +62 896-3083-2740
                     </a>
                   </div>
                 </div>
@@ -426,7 +426,7 @@
 
             message += `\nTotal: Rp${total.toLocaleString('id-ID')}`;
 
-            const whatsappURL = `https://wa.me/6289604482359?text=${encodeURIComponent(message)}`;
+            const whatsappURL = `https://wa.me/6289630832740?text=${encodeURIComponent(message)}`;
             window.open(whatsappURL, '_blank');
 
             resetCart();
