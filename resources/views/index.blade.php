@@ -5,93 +5,137 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="description" content="Mochi Kimochi - Rasakan sensasi mochi premium isi krim dan topping buah segar. Cocok untuk cemilan, hadiah, atau teman santai soremu!">
+  <meta name="keywords" content="mochi, mochi kimochi, dessert, cemilan, bandung, premium mochi">
+  <meta name="author" content="Mochi Kimochi">
+  
+  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Bootstrap Icons (fallback) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
+  <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css">
+  
   <link rel="shortcut icon"
     href="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true"
     type="image/x-icon">
-  <title>Mochi Kimochi</title>
+  <title>Mochi Kimochi - Premium Mochi Bandung</title>
 </head>
 
 <body>
   <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light fixed-top navbar-transparent">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#"><img
-          src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true"
-          alt="logo mochi kimochi" width="55" height="55"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <a class="navbar-brand fw-bold" href="#" aria-label="Mochi Kimochi Home">
+        <img src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true"
+          alt="Logo Mochi Kimochi" width="55" height="55">
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item p-2 text-center"><a class="nav-link rounded py-2 px-3" href="#">HOME</a></li>
-          <li class="nav-item p-2 text-center"><a class="nav-link rounded py-2 px-3" href="#produk">PRODUK</a></li>
-          <li class="nav-item p-2 text-center"><a class="nav-link rounded py-2 px-3" href="#kontak">KONTAK</a></li>
+        <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item p-2 text-center">
-            <a id="checkoutToggle" class="nav-link rounded py-2 px-3 position-relative" href="javascript:void(0)">
-              <i class="bi bi-cart-check"></i> Check Out
-              <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
-                0
-              </span>
-            </a>
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item p-2 text-center">
+            <a class="nav-link" href="#produk">Produk</a>
+          </li>
+          <li class="nav-item p-2 text-center">
+            <a class="nav-link" href="#kontak">Kontak</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="home bg-light d-flex flex-column justify-content-center align-items-center">
-    <h1 class="text-white display-1 mb-1 fw-bold">MOCHI KIMOCHI</h1>
-    <p class="lead text-white">Rasakan sensasi mochi premium isi krim dan topping buah segar. Cocok untuk cemilan,
-      hadiah, atau teman santai soremu!</p>
-    <a href="#produk" class="btn btn-pink me-2">Lihat Menu</a>
+  <!-- Floating Cart Button -->
+  <div id="floatingCart" class="floating-cart" role="button" aria-label="Shopping Cart">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="floating-cart-badge" class="cart-badge hidden">0</span>
   </div>
 
-  <section class="container py-5" id="produk">
-    <h2 class="text-center mb-5 fw-bold" style="color:#FF90BB;">Varian Rasa Mochi Kami</h2>
-    <div class="row g-4">
-      @foreach($products as $product)
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="product-card">
-          <img src="{{ asset('storage/' . $product->gambar) }}" alt="{{ $product->nama }}" class="product-img" />
-          <div class="card-body">
-            <h5 class="product-title">{{ $product->nama }}</h5>
-            <p class="product-desc">
-              {{ $product->deskripsi }}
-            </p>
-            <div class="d-flex justify-content-between align-items-center">
-              <p class="product-price fw-bold text-success mb-0">Rp{{ number_format($product->harga, 0, ',', '.') }}</p>
-              <span class="badge {{ $product->stok > 0 ? 'bg-success' : 'bg-danger' }}">
-                  Stok: {{ $product->stok }}
-              </span>
-            </div>
-            @if ($product->stok > 0)
-            <button class="btn btn-buy mt-2"
-              data-id="{{ $product->id }}"
-              data-nama="{{ $product->nama }}"
-              data-harga="{{ $product->harga }}"
-              data-gambar="{{ asset('storage/' . $product->gambar) }}"
-              data-stok="{{ $product->stok }}">
-              <i class="bi bi-cart-check-fill"></i> Pesan Sekarang
-            </button>
-            @else
-            <button class="btn btn-secondary mt-2" disabled>Stok Habis</button>
-            @endif
-          </div>
-        </div>
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav">
+    <div class="nav-container">
+      <a href="#" class="nav-item-mobile active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#produk" class="nav-item-mobile">
+        <i class="fas fa-cookie-bite"></i>
+        <span>Produk</span>
+      </a>
+      <a href="#kontak" class="nav-item-mobile">
+        <i class="fas fa-phone-alt"></i>
+        <span>Kontak</span>
+      </a>
+    </div>
+  </nav>
+
+  <header class="home">
+    <div class="container">
+      <h1 class="text-white mb-3 fw-bold">MOCHI KIMOCHI</h1>
+      <p class="lead text-white mb-4">Rasakan sensasi mochi premium isi krim dan topping buah segar.<br>Cocok untuk cemilan, hadiah, atau teman santai soremu!</p>
+      <a href="#produk" class="btn btn-pink">
+        <i class="fas fa-arrow-down me-2"></i>Lihat Menu
+      </a>
+    </div>
+  </header>
+
+  <section id="produk" class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Varian Rasa Mochi Kami</h2>
       </div>
-      @endforeach
+      <div class="row g-4">
+        @foreach($products as $product)
+        <div class="col-12 col-sm-6 col-lg-4">
+          <article class="product-card">
+            <img src="{{ asset('storage/' . $product->gambar) }}" alt="{{ $product->nama }}" class="product-img" loading="lazy" />
+            <div class="card-body">
+              <h3 class="product-title">{{ $product->nama }}</h3>
+              <p class="product-desc">{{ $product->deskripsi }}</p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="product-price">Rp{{ number_format($product->harga, 0, ',', '.') }}</span>
+                <span class="badge {{ $product->stok > 0 ? 'bg-success' : 'bg-danger' }}">
+                  <i class="fas fa-box"></i> {{ $product->stok }}
+                </span>
+              </div>
+              @if ($product->stok > 0)
+              <button class="btn btn-buy"
+                data-id="{{ $product->id }}"
+                data-nama="{{ $product->nama }}"
+                data-harga="{{ $product->harga }}"
+                data-gambar="{{ asset('storage/' . $product->gambar) }}"
+                data-stok="{{ $product->stok }}">
+                <i class="fas fa-cart-plus me-2"></i>Pesan Sekarang
+              </button>
+              @else
+              <button class="btn btn-secondary" disabled>
+                <i class="fas fa-times-circle me-2"></i>Stok Habis
+              </button>
+              @endif
+            </div>
+          </article>
+        </div>
+        @endforeach
+      </div>
     </div>
   </section>
 
   <aside id="checkoutSidebar" class="checkout-sidebar closed d-none d-lg-block">
     <div class="p-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold mb-0"><i class="bi bi-cart-check"></i> Check Out</h5>
-        <button id="closeSidebar" class="btn-close"></button>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">
+          <i class="fas fa-shopping-cart me-2"></i>Keranjang Belanja
+        </h5>
+        <button id="closeSidebar" class="btn-close" aria-label="Close"></button>
       </div>
       <ul class="list-group mb-3" id="cart-items-desktop"></ul>
       <hr />
@@ -100,17 +144,19 @@
         <span class="text-success" id="cart-total-desktop">Rp0</span>
       </div>
       <button class="btn btn-success w-100" id="whatsapp-checkout-desktop">
-        <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
+        <i class="fab fa-whatsapp me-2"></i>Pesan via WhatsApp
       </button>
     </div>
   </aside>
 
-  <div class="modal fade" id="checkoutModal" tabindex="-1">
+  <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title fw-bold"><i class="bi bi-cart-check"></i> Check Out</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <h5 class="modal-title fw-bold" id="checkoutModalLabel">
+            <i class="fas fa-shopping-cart me-2"></i>Keranjang Belanja
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <ul class="list-group mb-3" id="cart-items-mobile"></ul>
@@ -122,7 +168,7 @@
               <span class="text-success" id="cart-total-mobile">Rp0</span>
             </div>
             <button class="btn btn-success w-100" id="whatsapp-checkout-mobile">
-              <i class="bi bi-whatsapp"></i> Pesan via WhatsApp
+              <i class="fab fa-whatsapp me-2"></i>Pesan via WhatsApp
             </button>
           </div>
         </div>
@@ -130,81 +176,108 @@
     </div>
   </div>
 
-  <section id="kontak" class="py-5 bg-light" style="height: 100vh;">
+  <section id="kontak" class="py-5">
     <div class="container">
-      <h2 class="text-center fw-bold mb-5" style="color: #0d6efd;">KONTAK</h2>
-      <div class="row g-4 align-items-center">
-
-        <div class="col-md-6">
-          <div class="d-flex align-items-start mb-4">
-            <div class="me-3 fs-3 text-success"><i class="bi bi-whatsapp"></i></div>
-            <div>
-              <h5 class="fw-bold mb-1">WhatsApp</h5>
-              <a href="https://wa.me/6281234567890" target="_blank" class="text-decoration-none text-dark">+62
-                812-3456-7890</a>
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Hubungi Kami</h2>
+      </div>
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-6">
+          <div class="row g-3 h-100">
+            <div class="col-12">
+              <div class="contact-item h-100">
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <i class="fab fa-whatsapp text-success"></i>
+                  </div>
+                  <div>
+                    <h5 class="fw-bold mb-1">WhatsApp</h5>
+                    <a href="https://wa.me/6281234567890" target="_blank" class="text-decoration-none text-muted">
+                      +62 812-3456-7890
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="d-flex align-items-start mb-4">
-            <div class="me-3 fs-3 text-danger"><i class="bi bi-instagram"></i></div>
-            <div>
-              <h5 class="fw-bold mb-1">Instagram</h5>
-              <a href="https://instagram.com/mochikimochi" target="_blank"
-                class="text-decoration-none text-dark">@mochikimochi</a>
+            <div class="col-12">
+              <div class="contact-item h-100">
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <i class="fab fa-instagram" style="color: #E4405F;"></i>
+                  </div>
+                  <div>
+                    <h5 class="fw-bold mb-1">Instagram</h5>
+                    <a href="https://instagram.com/mochikimochi" target="_blank" class="text-decoration-none text-muted">
+                      @mochikimochi
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="d-flex align-items-start">
-            <div class="me-3 fs-3 text-primary"><i class="bi bi-geo-alt-fill"></i></div>
-            <div>
-              <h5 class="fw-bold mb-1">Alamat</h5>
-              <p class="mb-0">Jl. Pak Gatot Raya No.73S, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153</p>
+            <div class="col-12">
+              <div class="contact-item h-100">
+                <div class="d-flex align-items-start">
+                  <div class="me-3">
+                    <i class="fas fa-map-marker-alt text-primary"></i>
+                  </div>
+                  <div>
+                    <h5 class="fw-bold mb-1">Alamat</h5>
+                    <p class="mb-0 text-muted">
+                      Jl. Pak Gatot Raya No.73S, Gegerkalong, Kec. Sukasari, Kota Bandung, Jawa Barat 40153
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        <div class="col-md-6">
-          <div class="ratio ratio-4x3 rounded shadow-sm">
+        <div class="col-lg-6">
+          <div class="ratio ratio-4x3 rounded shadow-sm overflow-hidden">
             <iframe
-              src="https://maps.google.com/maps?q=Jalan%20Pak%20Gatot%20Raya%20No.73S%2C%20Gegerkalong%2C%20Kecamatan%20Sukasari%2C%20Kota%20Bandung%2C%20Jawa%20Barat%2040153&t=&z=13&ie=UTF8&iwloc=&output=embed"
-              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              src="https://maps.google.com/maps?q=Jalan%20Pak%20Gatot%20Raya%20No.73S%2C%20Gegerkalong%2C%20Kecamatan%20Sukasari%2C%20Kota%20Bandung%2C%20Jawa%20Barat%2040153&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
-
       </div>
     </div>
   </section>
 
-  <footer class="bg-dark text-light pt-5 pb-3">
+  <footer class="pt-5 pb-3">
     <div class="container">
       <div class="row g-4 justify-content-between">
-
-        <div class="col-md-6">
-          <div class="d-flex align-items-start">
-            <img src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true" alt="Logo Mochi Kimochi" width="50" class="me-3" />
+        <div class="col-md-7">
+          <div class="d-flex align-items-start mb-3">
+            <img src="https://github.com/ridwanhakimr/gambar/blob/main/image/mochi%20kimochi/mochilogo.png?raw=true" 
+                 alt="Logo Mochi Kimochi" width="60" class="me-3" />
             <div>
-              <h5 class="fw-bold">Mochi Kimochi</h5>
-              <p class="small mb-0">
+              <h5 class="fw-bold mb-2">Mochi Kimochi</h5>
+              <p class="mb-0" style="max-width: 400px;">
                 Rasakan kelembutan dan cita rasa khas dari mochi kami. Manis, lembut, dan selalu segar!
               </p>
             </div>
           </div>
         </div>
-
-        <div class="col-md-4 align-items-start">
-          <h5 class="fw-bold">Ikuti Kami</h5>
-          <ul class="list-unstyled">
-            <li>
-              <i class="bi bi-instagram text-danger me-2"></i>
-              <a href="https://instagram.com/mochikimochi" class="text-light text-decoration-none"
-                target="_blank">@mochikimochi</a>
-            </li>
-          </ul>
+        <div class="col-md-4">
+          <h5 class="fw-bold mb-3">Ikuti Kami</h5>
+          <div class="d-flex gap-3">
+            <a href="https://instagram.com/mochikimochi" target="_blank" 
+               class="text-light text-decoration-none d-flex align-items-center" 
+               aria-label="Instagram Mochi Kimochi">
+              <i class="fab fa-instagram fa-2x" style="color: #E4405F;"></i>
+            </a>
+            <a href="https://wa.me/6281234567890" target="_blank" 
+               class="text-light text-decoration-none d-flex align-items-center" 
+               aria-label="WhatsApp Mochi Kimochi">
+              <i class="fab fa-whatsapp fa-2x text-success"></i>
+            </a>
+          </div>
         </div>
-
       </div>
-
-      <hr class="border-secondary mt-4" />
+      <hr class="border-secondary mt-4 mb-3" />
       <div class="text-center small">
-        © 2025 Mochi Kimochi. Hak Cipta Dilindungi.
+        <p class="mb-0">
+          © 2025 <strong>Mochi Kimochi</strong>. All Rights Reserved.
+        </p>
       </div>
     </div>
   </footer>
@@ -220,7 +293,7 @@
       const cartTotalMobile = document.getElementById('cart-total-mobile');
       const whatsappCheckoutMobile = document.getElementById('whatsapp-checkout-mobile');
 
-      const cartBadge = document.getElementById('cart-badge');
+      const floatingCartBadge = document.getElementById('floating-cart-badge');
 
       function updateCartView() {
         cartItemsDesktop.innerHTML = '';
@@ -254,11 +327,12 @@
         cartTotalDesktop.textContent = `Rp${total.toLocaleString('id-ID')}`;
         cartTotalMobile.textContent = `Rp${total.toLocaleString('id-ID')}`;
 
+        // Update floating cart badge
         if (totalQty > 0) {
-          cartBadge.textContent = totalQty;
-          cartBadge.style.display = 'block';
+          floatingCartBadge.textContent = totalQty;
+          floatingCartBadge.classList.remove('hidden');
         } else {
-          cartBadge.style.display = 'none';
+          floatingCartBadge.classList.add('hidden');
         }
       }
 
@@ -367,12 +441,13 @@
       whatsappCheckoutDesktop.addEventListener('click', handleCheckout);
       whatsappCheckoutMobile.addEventListener('click', handleCheckout);
 
-      const toggleBtn = document.getElementById("checkoutToggle");
+      // Floating cart button handler
+      const floatingCart = document.getElementById("floatingCart");
       const sidebar = document.getElementById("checkoutSidebar");
       const closeBtn = document.getElementById("closeSidebar");
       const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
 
-      toggleBtn.addEventListener("click", () => {
+      floatingCart.addEventListener("click", () => {
         if (window.innerWidth < 992) {
           checkoutModal.show();
         } else {
@@ -384,6 +459,15 @@
       closeBtn.addEventListener("click", () => {
         sidebar.classList.remove("open");
         sidebar.classList.add("closed");
+      });
+      
+      // Mobile bottom nav active state
+      const mobileNavLinks = document.querySelectorAll('.nav-item-mobile');
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          mobileNavLinks.forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        });
       });
       
       updateCartView();

@@ -9,7 +9,7 @@ class mocimodel extends Model
 {
     protected $table = 'moci';
 
-    protected $fillable = ['nama', 'gambar', 'harga', 'deskripsi', 'stok', 'updated_by'];
+    protected $fillable = ['nama', 'gambar', 'harga', 'deskripsi', 'stok', 'updated_by','created_at', 'updated_at'];
 
     /**
      * Mendapatkan user yang terakhir kali mengubah data.

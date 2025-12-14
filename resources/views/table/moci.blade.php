@@ -21,7 +21,9 @@
             <th>Harga</th>
             <th>Stok</th>
             <th>Deskripsi</th>
-            <th>Terakhir diupdate oleh</th> <th>Aksi</th>
+            <th>Terakhir diupdate oleh</th>
+            <th>dibuat padaJ</th>
+            <th>update pada</th> <th>Aksi</th>
           </tr>
         </thead>
       </table>
@@ -67,6 +69,18 @@
         { // Tambahkan kolom baru
           data: 'updated_by.name',
           defaultContent: 'N/A' // Tampilkan jika tidak ada data admin
+        },
+        {
+          data: 'created_at',
+          render: function(data) {
+            return new Date(data).toLocaleDateString('id-ID'); // format tanggal sesuai lokal Indonesia
+          }
+        },
+        {
+          data: 'updated_at',
+          render: function(data) {
+            return new Date(data).toLocaleDateString('id-ID'); // format tanggal sesuai lokal Indonesia
+          }
         },
         {
           data: null,

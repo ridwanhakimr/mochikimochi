@@ -1,3 +1,83 @@
+/* ===========================
+   ADMIN LOGIN PAGE - RESPONSIVE
+   =========================== */
+
+/* Enhanced pink background */
 .bsb-tpl-bg-pink {
-    background-color: #ffc0cb !important; /* pink muda */
+  background: linear-gradient(135deg, #FFB3D4 0%, #FF90BB 100%) !important;
+}
+
+.bsb-tpl-bg-lotion {
+  background-color: #ffffff !important;
+}
+
+/* Login container improvements */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo section responsive */
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+/* Form styling */
+.login-form-section {
+  padding: 2rem;
+}
+
+.login-form-section h3 {
+  font-weight: 700;
+  color: #FF90BB;
+  margin-bottom: 2rem;
+}
+
+.form-control:focus {
+  border-color: #FF90BB;
+  box-shadow: 0 0 0 0.2rem rgba(255, 144, 187, 0.25);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #FF90BB 0%, #FFB3D4 100%);
+  border: none;
+  padding: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 144, 187, 0.4);
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .logo-section {
+    min-height: 200px;
+    padding: 2rem 1rem;
   }
+
+  .logo-section img {
+    max-width: 150px !important;
+  }
+
+  .login-form-section {
+    padding: 1.5rem 1rem;
+  }
+
+  .login-form-section h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Alert styling */
+.alert-danger {
+  border-left: 4px solid #dc3545;
+  background-color: #f8d7da;
+}
